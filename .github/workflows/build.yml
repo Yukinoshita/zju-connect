@@ -26,45 +26,14 @@ jobs:
       matrix:
         # Include amd64 on all platforms.
         goos: [ windows, linux, darwin ]
-        goarch: [ amd64, 386 ]
+        goarch: [ amd64 ]
         build_tag: [ full, tun ]
         exclude:
           # Exclude i386 on darwin.
           - goarch: 386
             goos: darwin
         include:
-          # BEGIN Linux ARM 5 6 7
-          - { goos: linux, goarch: arm, goarm: 7, build_tag: full }
-          - { goos: linux, goarch: arm, goarm: 7, build_tag: tun }
-          - { goos: linux, goarch: arm, goarm: 6, build_tag: full }
-          - { goos: linux, goarch: arm, goarm: 6, build_tag: tun }
-          - { goos: linux, goarch: arm, goarm: 5, build_tag: full }
-          - { goos: linux, goarch: arm, goarm: 5, build_tag: tun }
-          # END Linux ARM 5 6 7
-          # BEGIN Windows ARM 7
-          - { goos: windows, goarch: arm, goarm: 7, build_tag: full }
-          - { goos: windows, goarch: arm, goarm: 7, build_tag: tun }
-          # END Windows ARM 7
-          # BEGIN Other architectures
-          - { goos: darwin, goarch: arm64, build_tag: full }
-          - { goos: darwin, goarch: arm64, build_tag: tun }
           - { goos: linux, goarch: arm64, build_tag: full }
-          - { goos: linux, goarch: arm64, build_tag: tun }
-          - { goos: linux, goarch: riscv64, build_tag: full }
-          - { goos: linux, goarch: riscv64, build_tag: tun }
-          - { goos: windows, goarch: arm64, build_tag: full }
-          - { goos: windows, goarch: arm64, build_tag: tun }
-          # BEGIN MIPS
-          - { goos: linux, goarch: mips64, build_tag: full }
-          - { goos: linux, goarch: mips64, build_tag: tun }
-          - { goos: linux, goarch: mips64le, build_tag: full }
-          - { goos: linux, goarch: mips64le, build_tag: tun }
-          - { goos: linux, goarch: mipsle, build_tag: full }
-          - { goos: linux, goarch: mipsle, build_tag: tun }
-          - { goos: linux, goarch: mips, build_tag: full }
-          - { goos: linux, goarch: mips, build_tag: tun }
-          # END MIPS
-          # END Other architectures
       fail-fast: false
 
     runs-on: ubuntu-latest

@@ -2,8 +2,6 @@ package dial
 
 import (
 	"bytes"
-
-
 	"github.com/mythologyli/zju-connect/client"
 	"github.com/mythologyli/zju-connect/log"
 	"github.com/mythologyli/zju-connect/resolve"
@@ -11,10 +9,11 @@ import (
 	"net"
 	"strconv"
 	"strings"
+)
+
+import (
 	"context"
 	"errors"
-	"time"
-	"golang.org/x/net/proxy"
 )
 
 type Dialer struct {
@@ -22,57 +21,8 @@ type Dialer struct {
 	resolver             *resolve.Resolver
 	ipResources          []client.IPResource
 	alwaysUseVPN         bool
-	dialDirectHTTPProxy  string
-	dialDirectSocksProxy string
-}
-
-// Add SOCKS5 Dial
-func (d *Dialer) dialDirectWithSocksProxy(
-	ctx context.Context,
-	network string,
-	addr string,
-	isIP bool,
-) (net.Conn, error) {
-
-	// use context Dialer
-	baseDialer := &net.Dialer{
-		Timeout:   30 * time.Second,
-		KeepAlive: 30 * time.Second,
-	}
-
-	socksDialer, err := proxy.SOCKS5(
-		"tcp",
-		d.dialDirectSocksProxy,
-		nil,
-		baseDialer,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	// use context
-	type ctxDialer interface {
-		DialContext(ctx context.Context, network, addr string) (net.Conn, error)
-	}
-
-	var conn net.Conn
-	if cd, ok := socksDialer.(ctxDialer); ok {
-		conn, err = cd.DialContext(ctx, network, addr)
-	} else {
-		conn, err = socksDialer.Dial(network, addr)
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	// For Windows Performance
-	if tcpConn, ok := conn.(*net.TCPConn); ok {
-		_ = tcpConn.SetNoDelay(true)
-		_ = tcpConn.SetKeepAlive(true)
-		_ = tcpConn.SetKeepAlivePeriod(30 * time.Second)
-	}
-
-	return conn, nil
+	dialDirectHTTPProxy  string // format: "ip:port"
+	dialDirectSocksProxy string // WORKING IN PROCESS
 }
 
 // dialDirectIP need have a `hostAddr` parameter, which will be passed to PROXY. But `hostAddr` maybe empty, ipAddr never be empty.
