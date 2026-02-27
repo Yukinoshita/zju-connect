@@ -51,6 +51,9 @@ func (d *Dialer) dialDirectWithHTTPProxy(ctx context.Context, usedAddr string) (
 			_ = tcpConn.SetNoDelay(true)
 			_ = tcpConn.SetKeepAlive(true)
 			_ = tcpConn.SetKeepAlivePeriod(30 * time.Second)
+
+			_ = tcpConn.SetReadBuffer(1024 * 1024)
+			_ = tcpConn.SetWriteBuffer(1024 * 1024)
 		}
 		return conn, nil
 	}
